@@ -1,0 +1,27 @@
+/* Add to auth.css or create editDocs.css */
+.active-collaborators {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: #f9f9f9;
+    border-left: 4px solid #007bff;
+    border-radius: 6px;
+  }
+  
+  .active-collaborators strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #007bff;
+  }
+  
+  .active-collaborators ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .active-collaborators li {
+    padding: 4px 0;
+    color: #333;
+    font-weight: 500;
+  }
+  

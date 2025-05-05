@@ -38,7 +38,7 @@ function Signup() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSignup = async (e) => {
+  /*const handleSignup = async (e) => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -46,7 +46,24 @@ function Signup() {
     } catch (err) {
       console.error(err.message);
     }
+  };*/
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+  
+      // ✅ Store user info locally
+      localStorage.setItem('userEmail', user.email);
+      localStorage.setItem('userId', user.uid);
+  
+      // ✅ Redirect to home
+      navigate("/");
+    } catch (err) {
+      console.error(err.message);
+    }
   };
+  
 
   return (
     <div className="auth-container">

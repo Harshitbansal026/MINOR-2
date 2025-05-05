@@ -19,18 +19,8 @@ export default function Docs({
     const handleClose = () => setOpen(false);
     const [title, setTitle] = useState('');
     const collectionRef = collection(database, 'docsData')
-    const addData = () => {
-        /*addDoc(collectionRef, {
-            title: title,
-            docsDesc: ''
-        })
-            .then(() => {
-                alert('Data Added');
-                handleClose()
-            })
-            .catch(() => {
-                alert('Cannot add data')
-            })*/
+    /*const addData = () => {
+        
         const user = auth.currentUser;
         if (!user) {
             alert("Please login first");
@@ -41,6 +31,7 @@ export default function Docs({
             title: title,
             docsDesc: '',
             userId: user.uid
+            
         })
         .then(() => {
             alert('Data Added');
@@ -49,7 +40,29 @@ export default function Docs({
         .catch(() => {
             alert('Cannot add data')
         })
-    }
+    }*/
+    const addData = () => {
+        const user = auth.currentUser;
+        if (!user) {
+            alert("Please login first");
+            return;
+        }
+
+        addDoc(collectionRef, {
+            title: title,
+            docsDesc: '',
+            userId: user.uid,
+            collaborators: [user.uid]  // ✅ Create array with this user's ID
+        })
+        .then(() => {
+            alert('Data Added');
+            handleClose();
+        })
+        .catch(() => {
+            alert('Cannot add data');
+        });
+    };
+
     /* const getData = () => {
         onSnapshot(collectionRef, (data) => {
             setDocsData(data.docs.map((doc) => {
@@ -57,7 +70,7 @@ export default function Docs({
             }))
         })
     }*/
-    const getData = () => {
+    /*const getData = () => {
         const user = auth.currentUser;
         if (!user) return;
         
@@ -68,7 +81,23 @@ export default function Docs({
         
             setDocsData(userDocs);
         });
-        };
+    };*/
+    const getData = () => {
+        const user = auth.currentUser;
+        if (!user) return;
+      
+        onSnapshot(collectionRef, (data) => {
+          const sharedDocs = data.docs
+            .filter(doc => {
+              const docData = doc.data();
+              return docData.collaborators && docData.collaborators.includes(user.uid);
+            })
+            .map(doc => ({ ...doc.data(), id: doc.id }));
+          
+          setDocsData(sharedDocs);
+        });
+    };
+      
     const getID = (id) => {
         navigate(`/editDocs/${id}`)
     }

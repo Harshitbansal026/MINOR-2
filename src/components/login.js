@@ -38,7 +38,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  /*const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -46,7 +46,24 @@ function Login() {
     } catch (err) {
       console.error(err.message);
     }
+  };*/
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+  
+      // ✅ Store user info locally
+      localStorage.setItem('userEmail', user.email);
+      localStorage.setItem('userId', user.uid);
+  
+      // ✅ Redirect to home
+      navigate("/");
+    } catch (err) {
+      console.error(err.message);
+    }
   };
+  
 
   return (
     <div className="auth-container">
