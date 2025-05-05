@@ -77,6 +77,13 @@ export default function Docs({
                 setTitle={setTitle}
                 addData={addData}
             />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h1>INFINITY-DOCS</h1>
+            <button onClick={() => navigate('/dashboard')}>Go to Dashboard</button>
         </div>
+      
+      {/* Existing document grid rendering code below */}
+        </div>
+        
     )
 }
