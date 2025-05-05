@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { auth } from '../firebaseConfig';
 import Modal from './Modal';
 import {
     addDoc,
@@ -19,7 +20,7 @@ export default function Docs({
     const [title, setTitle] = useState('');
     const collectionRef = collection(database, 'docsData')
     const addData = () => {
-        addDoc(collectionRef, {
+        /*addDoc(collectionRef, {
             title: title,
             docsDesc: ''
         })
@@ -29,16 +30,45 @@ export default function Docs({
             })
             .catch(() => {
                 alert('Cannot add data')
-            })
+            })*/
+        const user = auth.currentUser;
+        if (!user) {
+            alert("Please login first");
+            return;
+        }
+                
+        addDoc(collectionRef, {
+            title: title,
+            docsDesc: '',
+            userId: user.uid
+        })
+        .then(() => {
+            alert('Data Added');
+            handleClose()
+        })
+        .catch(() => {
+            alert('Cannot add data')
+        })
     }
-    const getData = () => {
+    /* const getData = () => {
         onSnapshot(collectionRef, (data) => {
             setDocsData(data.docs.map((doc) => {
                 return { ...doc.data(), id: doc.id }
             }))
         })
-    }
-
+    }*/
+    const getData = () => {
+        const user = auth.currentUser;
+        if (!user) return;
+        
+        onSnapshot(collectionRef, (data) => {
+            const userDocs = data.docs
+                .filter(doc => doc.data().userId === user.uid) // Only get docs for this user
+                .map((doc) => ({ ...doc.data(), id: doc.id }));
+        
+            setDocsData(userDocs);
+        });
+        };
     const getID = (id) => {
         navigate(`/editDocs/${id}`)
     }
