@@ -1,81 +1,59 @@
-/* import { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "./firebaseConfig";
-
-function Signup() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert("Signup successful!");
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSignup}>
-      <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-      <button type="submit">Sign Up</button>
-    </form>
-  );
-}
-
-export default Signup; */
-
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import { useNavigate } from "react-router-dom";
-import "./auth.css";
+import "./Signup.css"; // Reuse or share the login CSS for styling consistency
 
-function Signup() {
+const Signup = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [error, setError] = useState("");
 
-  /*const handleSignup = async (e) => {
-    e.preventDefault();
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/");
-    } catch (err) {
-      console.error(err.message);
-    }
-  };*/
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-  
-      // ✅ Store user info locally
-      localStorage.setItem('userEmail', user.email);
-      localStorage.setItem('userId', user.uid);
-  
-      // ✅ Redirect to home
+      localStorage.setItem("userEmail", userCredential.user.email);
+      localStorage.setItem("userId", userCredential.user.uid);
       navigate("/");
     } catch (err) {
-      console.error(err.message);
+      setError("Failed to sign up. Try again.");
     }
   };
-  
 
   return (
-    <div className="auth-container">
-      <form onSubmit={handleSignup} className="auth-form">
-        <h2>Sign Up</h2>
-        <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
-        <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-        <button type="submit">Create Account</button>
-      </form>
+    <div className="signup-container">
+      <div className="signup-card">
+        <div className="logo-section">
+          <div className="logo-icon">✍️</div>
+          <h1>Join Infinity Docs</h1>
+          <p>Your cloud-based collaboration space</p>
+        </div>
+        <form onSubmit={handleSignup} className="signup-form">
+          <input
+            type="email"
+            placeholder="Enter email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Create password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          {error && <p className="error">{error}</p>}
+          <button type="submit">Sign Up</button>
+        </form>
+        <p className="login-link">
+          Already have an account? <a href="/login">Log in</a>
+        </p>
+      </div>
     </div>
   );
-}
+};
 
 export default Signup;
-
